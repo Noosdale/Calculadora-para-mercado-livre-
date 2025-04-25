@@ -1,12 +1,10 @@
-<!-- IMPORTANTE: essa versão inclui o início da estrutura multilíngue, modo escuro e uma área administrativa com acesso controlado por "h4dii1" -->
 
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Calculadora de Marketplaces</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <style>
     :root {
       --bg-color: #f0f2f5;
@@ -24,139 +22,70 @@
     }
     body {
       font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
       background: var(--bg-color);
       color: var(--text-color);
-    }
-    header, nav, main {
-      padding: 1em;
-    }
-    header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid #ccc;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 1em;
-      flex-wrap: wrap;
-      background-color: var(--card-bg);
-    }
-    nav button, .btn-exportar {
-      padding: 0.5em 1em;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-      background-color: #f9f9f9;
-      transition: background 0.3s;
-    }
-    nav button:hover, .btn-exportar:hover {
-      background-color: #e0e0e0;
-    }
-    .section {
-      display: none;
-      background: var(--card-bg);
-      margin: 1em;
-      padding: 1em;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .section.active {
-      display: block;
-    }
-    label, input, select, button {
-      display: block;
-      margin-bottom: 0.5em;
-      width: 100%;
-    }
-    input, select {
-      padding: 0.5em;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
       margin: 0;
-    }
-    button.calcular {
-      background-color: var(--btn-bg);
-      color: var(--btn-text);
-      border: none;
-      padding: 0.7em;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button.calcular:hover {
-      opacity: 0.9;
-    }
-    .item-kit {
-      border: 1px dashed #ccc;
-      padding: 0.5em;
-      border-radius: 8px;
-      margin-bottom: 0.5em;
-      background: #f9f9f9;
-    }
-    .historico-item {
-      margin-bottom: 1em;
-      padding: 0.5em;
-      background: #f5f5f5;
-      border-radius: 8px;
-      position: relative;
-    }
-    .btn-excluir {
-      position: absolute;
-      top: 5px;
-      right: 10px;
-      background: transparent;
-      border: none;
-      color: #d00;
-      font-size: 16px;
-      cursor: pointer;
+      padding: 0;
     }
     .switchers {
       display: flex;
       justify-content: flex-end;
-      gap: 1em;
-      margin: 1em;
-    }
-    .admin-panel {
-      display: none;
-      background: var(--card-bg);
+      gap: 0.5em;
       padding: 1em;
-      border-radius: 10px;
-      margin: 1em;
+    }
+    .icon-btn {
+      background: var(--card-bg);
+      border: 1px solid #ccc;
+      border-radius: 999px;
+      padding: 0.5em 0.7em;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .icon-btn:hover {
+      background: #ddd;
     }
   </style>
 </head>
 <body>
   <div class="switchers">
-    <button onclick="toggleTheme()">🌙/☀️</button>
-    <button onclick="toggleLang()">🇧🇷/🇺🇸</button>
-    <button onclick="abrirAdmin()">🔒 Admin</button>
+    <button class="icon-btn" onclick="toggleTheme()">🌙/☀️</button>
+    <button class="icon-btn" onclick="toggleLang()">🇧🇷/🇺🇸</button>
+    <button class="icon-btn" onclick="abrirAdmin()">🔒 Admin</button>
   </div>
-  <header>
-    <h1 id="titulo">Calculadora de Marketplaces</h1>
-  </header>
-  <nav>
-    <button onclick="showSection('simples')">Calculadora Simples</button>
-    <button onclick="showSection('kit')">Simulador de Kit</button>
-    <button onclick="showSection('comparador')">Comparador</button>
-    <button onclick="showSection('historico')">Histórico</button>
-  </nav>
-  <main>
-    <!-- Conteúdo das seções omitido aqui por espaço. Inserido completo no HTML final. -->
-    <section id="admin" class="section admin-panel">
-      <h2>Área Administrativa</h2>
-      <p>Atualize manualmente as taxas padrão:</p>
-      <textarea id="taxas-json" rows="10" style="width:100%"></textarea>
-      <button onclick="salvarTaxasAdmin()">Salvar Taxas</button>
-    </section>
-  </main>
+
+  <h1 id="titulo">Calculadora de Marketplaces</h1>
+
   <script>
-    // Funções: tema, idioma, admin...
+    // Tema
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    }
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+    // Idioma
+    const translations = {
+      "pt-BR": { "titulo": "Calculadora de Marketplaces" },
+      "en-US": { "titulo": "Marketplace Calculator" }
+    };
+    let currentLang = "pt-BR";
+    function toggleLang() {
+      currentLang = currentLang === "pt-BR" ? "en-US" : "pt-BR";
+      document.getElementById("titulo").textContent = translations[currentLang]["titulo"];
+    }
+
+    // Admin
+    function abrirAdmin() {
+      const senha = prompt("Digite a senha:");
+      if (senha === "h4dii1") {
+        alert("Acesso liberado à área administrativa.");
+      } else {
+        alert("Senha incorreta.");
+      }
+    }
   </script>
 </body>
 </html>
