@@ -3,8 +3,8 @@
 <html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Calculadora WingCell</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora WingCell PRO - Step 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -13,10 +13,6 @@
       margin: 0;
       padding: 2rem;
       text-align: center;
-    }
-    h1 {
-      font-size: 2.2rem;
-      color: #222;
     }
     .card {
       background: #fff;
@@ -49,28 +45,35 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    .result {
+    .result, .historico {
       margin-top: 1.5rem;
       padding: 1rem;
       background: #e0fff0;
       border-radius: 10px;
     }
+    .advanced {
+      display: none;
+      margin-top: 1rem;
+    }
+    footer {
+      margin-top: 4rem;
+      font-size: 0.8rem;
+      color: #666;
+    }
   </style>
 </head>
 <body>
   <h1>🧮 Calculadora WingCell PRO</h1>
+
   <div class="card">
     <label for="custo">Custo do Produto</label>
     <input type="number" id="custo" placeholder="Ex: 100" />
-    
-    <label for="frete">Frete</label>
-    <input type="number" id="frete" placeholder="Ex: 15" />
 
     <label for="plataforma">Plataforma</label>
     <select id="plataforma">
-      <option value="mercado_livre">Mercado Livre</option>
-      <option value="shopee">Shopee</option>
-      <option value="magalu">Magalu</option>
+      <option value="mercado_livre">Mercado Livre (i)</option>
+      <option value="shopee">Shopee (i)</option>
+      <option value="magalu">Magalu (i)</option>
     </select>
 
     <label for="plano">Plano</label>
@@ -79,41 +82,81 @@
       <option value="premium">Premium</option>
     </select>
 
+    <div class="advanced" id="modo-avancado">
+      <label for="frete">Frete Manual (Modo Avançado)</label>
+      <input type="number" id="frete" placeholder="Ex: 20" />
+    </div>
+
     <button onclick="calcular()">Calcular</button>
+    <button onclick="ativarAvancado()">Ativar Modo Avançado</button>
 
     <div id="resultado" class="result"></div>
+    <div class="historico" id="historico"></div>
   </div>
 
-  <script>
-    const taxas = {
-      mercado_livre: { classico: 0.16, premium: 0.18 },
-      shopee: { classico: 0.14, premium: 0.16 },
-      magalu: { classico: 0.15, premium: 0.17 }
-    };
+  <footer>Versão 2.0 • Calculadora WingCell © 2024</footer>
 
-    function calcular() {
-      const custo = parseFloat(document.getElementById('custo').value);
-      const frete = parseFloat(document.getElementById('frete').value);
-      const plataforma = document.getElementById('plataforma').value;
-      const plano = document.getElementById('plano').value;
+<script>
+const taxas = {
+  mercado_livre: { classico: 0.16, premium: 0.18, frete: 17.90 },
+  shopee: { classico: 0.14, premium: 0.16, frete: 14.99 },
+  magalu: { classico: 0.15, premium: 0.17, frete: 16.50 }
+};
 
-      if (isNaN(custo) || isNaN(frete)) {
-        alert("Preencha todos os campos corretamente.");
-        return;
-      }
+function ativarAvancado() {
+  document.getElementById('modo-avancado').style.display = 'block';
+}
 
-      let resultado = "<h3>Resultados</h3>";
-      for (let margem = 10; margem <= 100; margem += 10) {
-        const taxa = taxas[plataforma][plano];
-        const preco = (custo + frete) * (1 + taxa) * (1 + margem / 100);
-        const lucro = preco - custo - frete - (preco * taxa);
-        if (lucro > 0) {
-          resultado += `<p><strong>${margem}% margem:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
-        }
-      }
+function calcular() {
+  const custo = parseFloat(document.getElementById('custo').value);
+  const plataforma = document.getElementById('plataforma').value;
+  const plano = document.getElementById('plano').value;
+  const freteManual = parseFloat(document.getElementById('frete').value);
 
-      document.getElementById('resultado').innerHTML = resultado;
+  if (isNaN(custo)) {
+    alert("Informe o custo do produto!");
+    return;
+  }
+
+  const dados = taxas[plataforma];
+  const taxa = dados[plano];
+  const frete = isNaN(freteManual) ? dados.frete : freteManual;
+
+  let resumo = `<h3>Resumo</h3>`;
+  resumo += `<p>Custo: R$ ${custo.toFixed(2)}</p>`;
+  resumo += `<p>Frete: R$ ${frete.toFixed(2)}</p>`;
+  resumo += `<p>Taxa (%): ${(taxa * 100).toFixed(2)}%</p>`;
+  
+  resumo += `<h3>Margens sugeridas</h3>`;
+  for (let margem = 10; margem <= 100; margem += 10) {
+    const preco = (custo + frete) / (1 - taxa) * (1 + margem / 100);
+    const lucro = preco - custo - frete - (preco * taxa);
+    if (lucro > 0) {
+      resumo += `<p><strong>${margem}%:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
     }
-  </script>
+  }
+
+  document.getElementById('resultado').innerHTML = resumo;
+  salvarHistorico(custo, plataforma, plano, resumo);
+}
+
+function salvarHistorico(custo, plataforma, plano, resumo) {
+  const historico = JSON.parse(localStorage.getItem('historico')) || [];
+  historico.push({ data: new Date().toLocaleString(), custo, plataforma, plano, resumo });
+  localStorage.setItem('historico', JSON.stringify(historico));
+  carregarHistorico();
+}
+
+function carregarHistorico() {
+  const historico = JSON.parse(localStorage.getItem('historico')) || [];
+  let html = "<h3>Histórico</h3>";
+  for (const item of historico.reverse()) {
+    html += `<div style="margin-bottom:1rem;"><strong>${item.data}</strong><br>${item.plataforma.toUpperCase()} - ${item.plano.toUpperCase()}<br>${item.resumo}</div>`;
+  }
+  document.getElementById('historico').innerHTML = html;
+}
+carregarHistorico();
+</script>
+
 </body>
 </html>
