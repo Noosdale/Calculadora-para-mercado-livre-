@@ -29,6 +29,8 @@
 
 ---
 
+## 🚀 Como usar
+
 🚀 Deploy no Netlify
 1. Acesse [Netlify](https://netlify.com).
 2. Clique em 'New Site from Git'.
@@ -36,8 +38,4 @@
 4. Clique em 'Deploy Site' — pronto!
 
 
-## 🚀 Como usar
 
-1. Clone este repositório:
-```bash
-git clone https://github.com/seu-usuario/calculadora-wingcell.git
