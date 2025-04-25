@@ -4,13 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora WingCell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #f9f9f9;
       --text: #111;
-      --card: #ffffff;
+      --card: #fff;
       --accent: #00c9a7;
       --shadow: rgba(0, 0, 0, 0.1);
+      --result-bg: #d0ffe0;
+      --result-text: #000;
     }
     [data-theme="dark"] {
       --bg: #121212;
@@ -18,13 +21,15 @@
       --card: #1e1e1e;
       --accent: #00fce1;
       --shadow: rgba(255, 255, 255, 0.05);
+      --result-bg: #1a2a1a;
+      --result-text: #cfcfcf;
     }
     * {
       box-sizing: border-box;
     }
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Montserrat', sans-serif;
       background: var(--bg);
       color: var(--text);
       transition: background 0.3s, color 0.3s;
@@ -37,7 +42,7 @@
     }
     h1 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
     nav {
       display: flex;
@@ -47,6 +52,7 @@
       margin-top: 1rem;
     }
     nav button, .icon-btn {
+      position: relative;
       border: none;
       border-radius: 999px;
       padding: 0.5em 1.2em;
@@ -59,6 +65,24 @@
     }
     nav button:hover, .icon-btn:hover {
       opacity: 0.9;
+    }
+    nav button .tooltip {
+      visibility: hidden;
+      width: 150px;
+      background-color: var(--card);
+      color: var(--text);
+      text-align: center;
+      border-radius: 6px;
+      padding: 0.5em;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -75px;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+    nav button:hover .tooltip {
+      visibility: visible;
     }
     .top-bar {
       display: flex;
@@ -102,7 +126,8 @@
     }
     .result {
       margin-top: 1rem;
-      background: #d0ffe0;
+      background: var(--result-bg);
+      color: var(--result-text);
       padding: 1rem;
       border-radius: 10px;
     }
@@ -124,10 +149,10 @@
   <header>
     <h1 id="titulo">Calculadora de Marketplaces</h1>
     <nav>
-      <button onclick="showSection('simples')">Simples</button>
-      <button onclick="showSection('kit')">Kit/Combo</button>
-      <button onclick="showSection('comparador')">Comparador</button>
-      <button onclick="showSection('historico')">Histórico</button>
+      <button onclick="showSection('simples')">Simples <span class="tooltip">Calcular preço e lucro de um produto</span></button>
+      <button onclick="showSection('kit')">Kit/Combo <span class="tooltip">Montar kits e calcular preço final</span></button>
+      <button onclick="showSection('comparador')">Comparador <span class="tooltip">Comparar lucro entre plataformas</span></button>
+      <button onclick="showSection('historico')">Histórico <span class="tooltip">Visualizar simulações salvas</span></button>
     </nav>
   </header>
 
@@ -135,203 +160,184 @@
     <h2>Simples</h2>
     <input placeholder="Nome da Simulação" />
     <input type="number" id="custo-simples" placeholder="Custo do Produto" />
-    <select id="plataforma">
+    <select id="plataforma-simples">
       <option value="mercado_livre">🟡 Mercado Livre</option>
       <option value="shopee">🟠 Shopee</option>
       <option value="magalu">🔵 Magalu</option>
+    </select>
+    <select id="plano-simples">
+      <option value="classico">Clássico</option>
+      <option value="premium">Premium</option>
     </select>
     <button class="action" onclick="calcular()">Calcular</button>
     <div id="resultado" class="result"></div>
   </section>
 
-  <section id="kit" class="section">
-    <h2>Kit/Combo</h2>
-    
+
+<section id="kit" class="section">
+  <h2>Kit/Combo</h2>
   <div id="kit-itens"></div>
   <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
+  <select id="plataforma-kit">
+    <option value="mercado_livre">🟡 Mercado Livre</option>
+    <option value="shopee">🟠 Shopee</option>
+    <option value="magalu">🔵 Magalu</option>
+  </select>
+  <select id="plano-kit">
+    <option value="classico">Clássico</option>
+    <option value="premium">Premium</option>
+  </select>
   <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
   <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
   <button class="action" onclick="calcularKit()">Calcular Kit</button>
   <div id="resultado-kit" class="result"></div>
-  
-  </section>
+</section>
 
-  <section id="comparador" class="section">
-    <h2>Comparador</h2>
-    
-  <div id="kit-itens"></div>
-  <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
-  <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
-  <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
-  <button class="action" onclick="calcularKit()">Calcular Kit</button>
-  <div id="resultado-kit" class="result"></div>
-  
-  </section>
+<section id="comparador" class="section">
+  <h2>Comparador</h2>
+  <input type="number" id="custo-comparador" placeholder="Custo do Produto (R$)" />
+  <select id="plano-comparador">
+    <option value="classico">Clássico</option>
+    <option value="premium">Premium</option>
+  </select>
+  <button class="action" onclick="compararPlataformas()">Comparar</button>
+  <div id="resultado-comparador" class="result"></div>
+</section>
 
-  <section id="historico" class="section active">
-    <h2>Histórico</h2>
-    
-  <div id="kit-itens"></div>
-  <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
-  <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
-  <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
-  <button class="action" onclick="calcularKit()">Calcular Kit</button>
-  <div id="resultado-kit" class="result"></div>
-  
-  </section>
+<section id="historico" class="section">
+  <h2>Histórico</h2>
+  <button class="action" onclick="carregarHistorico()">Carregar Histórico</button>
+  <div id="historico-lista" class="result"></div>
+</section>
 
-  <section id="admin-panel" class="section" style="display:none;">
-    <h2>Área Admin</h2>
-    <textarea style="width:100%;" rows="5" id="admin-config">{ "mercado_livre": 0.16, "shopee": 0.12, "magalu": 0.15 }</textarea>
-  </section>
 
   <footer>
     <p>Versão 1.0 – Calculadora WingCell © 2024</p>
   </footer>
 
-  <script>
-    function toggleTheme() {
-      const theme = document.documentElement.getAttribute('data-theme');
-      const next = theme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    }
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+<script>
 
-    const translations = {
-      "pt-BR": { "titulo": "Calculadora de Marketplaces" },
-      "en-US": { "titulo": "Marketplace Calculator" }
-    };
-    let currentLang = "pt-BR";
-    function toggleLang() {
-      currentLang = currentLang === "pt-BR" ? "en-US" : "pt-BR";
-      document.getElementById("titulo").textContent = translations[currentLang]["titulo"];
-    }
+const taxas = {
+  mercado_livre: { classico: 0.16, premium: 0.18 },
+  shopee: { classico: 0.12, premium: 0.14 },
+  magalu: { classico: 0.15, premium: 0.17 }
+};
 
-    function showSection(id) {
-      document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
+function toggleTheme() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  const next = theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-    function abrirAdmin() {
-      const senha = prompt("Digite a senha:");
-      if (senha === "h4dii1") {
-        document.getElementById("admin-panel").style.display = "block";
-        showSection("admin-panel");
-      } else {
-        alert("Acesso negado");
-      }
-    }
+const translations = {
+  "pt-BR": { "titulo": "Calculadora de Marketplaces" },
+  "en-US": { "titulo": "Marketplace Calculator" }
+};
+let currentLang = "pt-BR";
+function toggleLang() {
+  currentLang = currentLang === "pt-BR" ? "en-US" : "pt-BR";
+  document.getElementById("titulo").textContent = translations[currentLang]["titulo"];
+}
 
-    function calcular() {
-      const custo = parseFloat(document.getElementById('custo-simples').value);
-      const plataforma = document.getElementById('plataforma').value;
-      const taxas = { mercado_livre: 0.16, shopee: 0.12, magalu: 0.15 };
-      if (!custo) return alert('Informe um custo válido.');
-      const preco = custo / (1 - taxas[plataforma]);
-      const lucro = preco - custo;
-      document.getElementById('resultado').innerHTML =
-        `<p>Preço sugerido: R$ ${preco.toFixed(2)}</p><p>Lucro estimado: R$ ${lucro.toFixed(2)}</p>`;
-    }
-  
-  let contador = 0;
-  function addItemKit() {
-    contador++;
-    const container = document.getElementById("kit-itens");
-    const div = document.createElement("div");
-    div.innerHTML = `
-      <div style="margin-bottom:1em;padding:1em;border:1px dashed #ccc;border-radius:10px">
-        <input placeholder="Nome do Item" id="item-nome-${contador}" />
-        <input type="number" placeholder="Custo do Item" id="item-custo-${contador}" />
-        <input type="number" placeholder="Quantidade" id="item-qtd-${contador}" />
-      </div>
-    `;
-    container.appendChild(div);
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function abrirAdmin() {
+  const senha = prompt("Digite a senha:");
+  if (senha === "h4dii1") {
+    alert("Acesso concedido.");
+  } else {
+    alert("Acesso negado.");
   }
+}
 
-  function calcularKit() {
-    let total = 0;
-    for (let i = 1; i <= contador; i++) {
-      const nome = document.getElementById(`item-nome-${i}`);
-      const custo = document.getElementById(`item-custo-${i}`);
-      const qtd = document.getElementById(`item-qtd-${i}`);
-      if (nome && custo && qtd) {
-        total += parseFloat(custo.value || 0) * parseInt(qtd.value || 0);
-      }
-    }
-    const frete = parseFloat(document.getElementById("frete-kit").value || 0);
-    const margem = parseFloat(document.getElementById("margem-kit").value || 0);
-    const totalFinal = (total + frete) / (1 - margem / 100);
-    const lucro = totalFinal - total - frete;
-    document.getElementById("resultado-kit").innerHTML = `
-      <p>Preço do Kit: R$ ${totalFinal.toFixed(2)}</p>
-      <p>Lucro Estimado: R$ ${lucro.toFixed(2)}</p>
-    `;
+function calcular() {
+  const custo = parseFloat(document.getElementById("custo-simples").value);
+  const plataforma = document.getElementById("plataforma-simples").value;
+  const plano = document.getElementById("plano-simples").value;
+  if (!custo) return alert("Informe um custo válido.");
+  const taxa = taxas[plataforma][plano];
+  const preco = custo / (1 - taxa);
+  const lucro = preco - custo;
+  const texto = `<p>Preço sugerido: R$ ${preco.toFixed(2)}</p><p>Lucro estimado: R$ ${lucro.toFixed(2)}</p>`;
+  document.getElementById("resultado").innerHTML = texto;
+  salvarSimulacao("Simples", texto);
+}
+
+let contador = 0;
+function addItemKit() {
+  contador++;
+  const container = document.getElementById("kit-itens");
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <div style="margin-bottom:1em;padding:1em;border:1px dashed #ccc;border-radius:10px">
+      <input placeholder="Nome do Item" id="item-nome-${contador}" />
+      <input type="number" placeholder="Custo do Item" id="item-custo-${contador}" />
+      <input type="number" placeholder="Quantidade" id="item-qtd-${contador}" />
+    </div>
+  `;
+  container.appendChild(div);
+}
+
+function calcularKit() {
+  let total = 0;
+  for (let i = 1; i <= contador; i++) {
+    const custo = parseFloat(document.getElementById(`item-custo-${i}`)?.value || 0);
+    const qtd = parseInt(document.getElementById(`item-qtd-${i}`)?.value || 0);
+    total += custo * qtd;
   }
-  
-  function compararPlataformas() {
-    const custo = parseFloat(document.getElementById("custo-comparador").value || 0);
-    if (!custo) return alert("Informe o custo do produto.");
+  const frete = parseFloat(document.getElementById("frete-kit").value || 0);
+  const margem = parseFloat(document.getElementById("margem-kit").value || 0);
+  const plataforma = document.getElementById("plataforma-kit").value;
+  const plano = document.getElementById("plano-kit").value;
+  const taxa = taxas[plataforma][plano];
+  const preco = (total + frete) / (1 - taxa - (margem / 100));
+  const lucro = preco - total - frete;
+  const texto = `<p>Preço do Kit: R$ ${preco.toFixed(2)}</p><p>Lucro Estimado: R$ ${lucro.toFixed(2)}</p>`;
+  document.getElementById("resultado-kit").innerHTML = texto;
+  salvarSimulacao("Kit/Combo", texto);
+}
 
-    const taxas = {
-      "Mercado Livre": 0.16,
-      "Shopee": 0.12,
-      "Magalu": 0.15
-    };
-
-    let resultado = "";
-    for (const [plataforma, taxa] of Object.entries(taxas)) {
-      const preco = custo / (1 - taxa);
-      const lucro = preco - custo;
-      resultado += `<p><strong>${plataforma}</strong>: Preço R$ ${preco.toFixed(2)} — Lucro R$ ${lucro.toFixed(2)}</p>`;
-    }
-
-    document.getElementById("resultado-comparador").innerHTML = resultado;
+function compararPlataformas() {
+  const custo = parseFloat(document.getElementById("custo-comparador").value || 0);
+  const plano = document.getElementById("plano-comparador").value;
+  if (!custo) return alert("Informe o custo do produto.");
+  let resultado = "";
+  for (const [nome, planoTaxas] of Object.entries(taxas)) {
+    const taxa = planoTaxas[plano];
+    const preco = custo / (1 - taxa);
+    const lucro = preco - custo;
+    resultado += `<p><strong>${nome.replace("_", " ").toUpperCase()}</strong>: Preço R$ ${preco.toFixed(2)} — Lucro R$ ${lucro.toFixed(2)}</p>`;
   }
-  
-    function salvarSimulacao(tipo, dados) {
-      let historico = JSON.parse(localStorage.getItem('historico')) || [];
-      const timestamp = new Date().toLocaleString();
-      historico.push({ tipo, dados, timestamp });
-      localStorage.setItem('historico', JSON.stringify(historico));
-    }
+  document.getElementById("resultado-comparador").innerHTML = resultado;
+  salvarSimulacao("Comparador", resultado);
+}
 
-    function carregarHistorico() {
-      const lista = JSON.parse(localStorage.getItem('historico')) || [];
-      const container = document.getElementById("historico-lista");
-      if (!lista.length) {
-        container.innerHTML = "<p>Nenhuma simulação salva ainda.</p>";
-        return;
-      }
-      container.innerHTML = lista.map(item =>
-        `<div style='margin-bottom:1em;padding:1em;background:#ddd;border-radius:10px'>
-          <strong>${item.tipo}</strong> — ${item.timestamp}<br>${item.dados}
-        </div>`
-      ).join('');
-    }
+function salvarSimulacao(tipo, dados) {
+  const historico = JSON.parse(localStorage.getItem("historico")) || [];
+  historico.push({ tipo, dados, timestamp: new Date().toLocaleString() });
+  localStorage.setItem("historico", JSON.stringify(historico));
+}
 
-    // Modificações nos cálculos para salvar resultado no histórico
-    const originalCalcular = calcular;
-    calcular = function() {
-      originalCalcular();
-      const texto = document.getElementById('resultado').innerHTML;
-      salvarSimulacao('Simples', texto);
-    }
+function carregarHistorico() {
+  const historico = JSON.parse(localStorage.getItem("historico")) || [];
+  const container = document.getElementById("historico-lista");
+  if (!historico.length) {
+    container.innerHTML = "<p>Nenhuma simulação salva ainda.</p>";
+    return;
+  }
+  container.innerHTML = historico.map(item =>
+    `<div style='margin-bottom:1em;padding:1em;background:#ddd;border-radius:10px'>
+      <strong>${item.tipo}</strong> — ${item.timestamp}<br>${item.dados}
+    </div>`).join("");
+}
 
-    const originalCalcularKit = calcularKit;
-    calcularKit = function() {
-      originalCalcularKit();
-      const texto = document.getElementById('resultado-kit').innerHTML;
-      salvarSimulacao('Kit/Combo', texto);
-    }
-
-    const originalCompararPlataformas = compararPlataformas;
-    compararPlataformas = function() {
-      originalCompararPlataformas();
-      const texto = document.getElementById('resultado-comparador').innerHTML;
-      salvarSimulacao('Comparador', texto);
-    }
-    </script>
+// JavaScript principal (vai ser completado em sequência)
+</script>
 
 </body>
 </html>
