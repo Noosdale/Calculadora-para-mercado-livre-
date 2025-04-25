@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Calculadora WingCell PRO - Step 1</title>
+  <title>Calculadora WingCell PRO - Kit/Combo</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -19,7 +19,7 @@
       padding: 1.5rem;
       margin-top: 2rem;
       border-radius: 12px;
-      max-width: 700px;
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -45,15 +45,17 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    .kit-item {
+      background: #e8f8f5;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 10px;
+    }
     .result, .historico {
       margin-top: 1.5rem;
       padding: 1rem;
       background: #e0fff0;
       border-radius: 10px;
-    }
-    .advanced {
-      display: none;
-      margin-top: 1rem;
     }
     footer {
       margin-top: 4rem;
@@ -63,11 +65,11 @@
   </style>
 </head>
 <body>
-  <h1>🧮 Calculadora WingCell PRO</h1>
+  <h1>🧰 Simulador de Kit/Combo - WingCell PRO</h1>
 
   <div class="card">
-    <label for="custo">Custo do Produto</label>
-    <input type="number" id="custo" placeholder="Ex: 100" />
+    <div id="kit-itens"></div>
+    <button onclick="addKitItem()">+ Adicionar Item ao Kit</button>
 
     <label for="plataforma">Plataforma</label>
     <select id="plataforma">
@@ -82,13 +84,7 @@
       <option value="premium">Premium</option>
     </select>
 
-    <div class="advanced" id="modo-avancado">
-      <label for="frete">Frete Manual (Modo Avançado)</label>
-      <input type="number" id="frete" placeholder="Ex: 20" />
-    </div>
-
-    <button onclick="calcular()">Calcular</button>
-    <button onclick="ativarAvancado()">Ativar Modo Avançado</button>
+    <button onclick="calcularKit()">Calcular Kit</button>
 
     <div id="resultado" class="result"></div>
     <div class="historico" id="historico"></div>
@@ -103,53 +99,66 @@ const taxas = {
   magalu: { classico: 0.15, premium: 0.17, frete: 16.50 }
 };
 
-function ativarAvancado() {
-  document.getElementById('modo-avancado').style.display = 'block';
+let kitCounter = 0;
+function addKitItem() {
+  kitCounter++;
+  const div = document.createElement('div');
+  div.className = 'kit-item';
+  div.innerHTML = `
+    <input type="text" id="nome-${kitCounter}" placeholder="Nome do Produto" />
+    <input type="number" id="custo-${kitCounter}" placeholder="Custo Unitário (R$)" />
+    <input type="number" id="quantidade-${kitCounter}" placeholder="Quantidade" />
+  `;
+  document.getElementById('kit-itens').appendChild(div);
 }
 
-function calcular() {
-  const custo = parseFloat(document.getElementById('custo').value);
+function calcularKit() {
   const plataforma = document.getElementById('plataforma').value;
   const plano = document.getElementById('plano').value;
-  const freteManual = parseFloat(document.getElementById('frete').value);
 
-  if (isNaN(custo)) {
-    alert("Informe o custo do produto!");
+  const taxa = taxas[plataforma][plano];
+  const frete = taxas[plataforma].frete;
+
+  let custoTotal = 0;
+  for (let i = 1; i <= kitCounter; i++) {
+    const custo = parseFloat(document.getElementById(`custo-${i}`)?.value || 0);
+    const qtd = parseInt(document.getElementById(`quantidade-${i}`)?.value || 0);
+    custoTotal += custo * qtd;
+  }
+
+  if (custoTotal === 0) {
+    alert("Adicione ao menos 1 item ao kit!");
     return;
   }
 
-  const dados = taxas[plataforma];
-  const taxa = dados[plano];
-  const frete = isNaN(freteManual) ? dados.frete : freteManual;
+  let resumo = `<h3>Resumo do Kit</h3>`;
+  resumo += `<p>Custo Total Itens: R$ ${custoTotal.toFixed(2)}</p>`;
+  resumo += `<p>Frete Padrão: R$ ${frete.toFixed(2)}</p>`;
+  resumo += `<p>Taxa Plataforma: ${(taxa * 100).toFixed(2)}%</p>`;
 
-  let resumo = `<h3>Resumo</h3>`;
-  resumo += `<p>Custo: R$ ${custo.toFixed(2)}</p>`;
-  resumo += `<p>Frete: R$ ${frete.toFixed(2)}</p>`;
-  resumo += `<p>Taxa (%): ${(taxa * 100).toFixed(2)}%</p>`;
-  
   resumo += `<h3>Margens sugeridas</h3>`;
   for (let margem = 10; margem <= 100; margem += 10) {
-    const preco = (custo + frete) / (1 - taxa) * (1 + margem / 100);
-    const lucro = preco - custo - frete - (preco * taxa);
+    const preco = (custoTotal + frete) / (1 - taxa) * (1 + margem / 100);
+    const lucro = preco - custoTotal - frete - (preco * taxa);
     if (lucro > 0) {
-      resumo += `<p><strong>${margem}%:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
+      resumo += `<p><strong>${margem}%:</strong> Preço Kit: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
     }
   }
 
   document.getElementById('resultado').innerHTML = resumo;
-  salvarHistorico(custo, plataforma, plano, resumo);
+  salvarHistorico(custoTotal, plataforma, plano, resumo);
 }
 
-function salvarHistorico(custo, plataforma, plano, resumo) {
-  const historico = JSON.parse(localStorage.getItem('historico')) || [];
-  historico.push({ data: new Date().toLocaleString(), custo, plataforma, plano, resumo });
-  localStorage.setItem('historico', JSON.stringify(historico));
+function salvarHistorico(custoTotal, plataforma, plano, resumo) {
+  const historico = JSON.parse(localStorage.getItem('historico-kit')) || [];
+  historico.push({ data: new Date().toLocaleString(), custoTotal, plataforma, plano, resumo });
+  localStorage.setItem('historico-kit', JSON.stringify(historico));
   carregarHistorico();
 }
 
 function carregarHistorico() {
-  const historico = JSON.parse(localStorage.getItem('historico')) || [];
-  let html = "<h3>Histórico</h3>";
+  const historico = JSON.parse(localStorage.getItem('historico-kit')) || [];
+  let html = "<h3>Histórico de Kits</h3>";
   for (const item of historico.reverse()) {
     html += `<div style="margin-bottom:1rem;"><strong>${item.data}</strong><br>${item.plataforma.toUpperCase()} - ${item.plano.toUpperCase()}<br>${item.resumo}</div>`;
   }
