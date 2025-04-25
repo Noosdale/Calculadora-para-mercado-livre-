@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
@@ -9,91 +8,109 @@
     :root {
       --bg: #f9f9f9;
       --text: #111;
-      --card: #fff;
-      --accent: #4CAF50;
+      --card: #ffffff;
+      --accent: #00c9a7;
+      --shadow: rgba(0, 0, 0, 0.1);
     }
     [data-theme="dark"] {
       --bg: #121212;
       --text: #eee;
       --card: #1e1e1e;
-      --accent: #03dac6;
+      --accent: #00fce1;
+      --shadow: rgba(255, 255, 255, 0.05);
+    }
+    * {
+      box-sizing: border-box;
     }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
       transition: background 0.3s, color 0.3s;
     }
     header {
-      padding: 1em;
-      background: var(--card);
       text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      padding: 2rem 1rem 1rem;
+      background: var(--card);
+      box-shadow: 0 2px 6px var(--shadow);
+    }
+    h1 {
+      margin: 0;
+      font-size: 2rem;
     }
     nav {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 0.5em;
-      padding: 0.5em;
-      background: var(--card);
+      gap: 1em;
+      margin-top: 1rem;
     }
     nav button, .icon-btn {
       border: none;
       border-radius: 999px;
-      padding: 0.5em 1em;
-      cursor: pointer;
+      padding: 0.5em 1.2em;
       font-weight: bold;
       background: var(--accent);
-      color: white;
+      color: #000;
+      cursor: pointer;
+      box-shadow: 0 2px 6px var(--shadow);
+      transition: background 0.2s;
     }
-    .icon-btn:hover, nav button:hover {
+    nav button:hover, .icon-btn:hover {
       opacity: 0.9;
     }
     .top-bar {
       display: flex;
       justify-content: flex-end;
       gap: 0.5em;
-      padding: 1em;
+      padding: 0.8rem 1rem;
+      background: var(--card);
     }
     .section {
       display: none;
-      padding: 1.5em;
       max-width: 800px;
-      margin: auto;
+      margin: 2rem auto;
       background: var(--card);
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 4px 10px var(--shadow);
     }
     .section.active {
       display: block;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
+      padding: 0.75em;
       margin: 0.5em 0;
-      padding: 0.5em;
+      border-radius: 10px;
       border: 1px solid #ccc;
-      border-radius: 8px;
+      font-size: 1rem;
     }
     button.action {
       margin-top: 1em;
-      background: var(--accent);
-      color: white;
       width: 100%;
+      padding: 0.8em;
+      font-size: 1rem;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px var(--shadow);
+      cursor: pointer;
     }
     .result {
-      margin-top: 1em;
-      background: #e0ffe0;
-      padding: 1em;
-      border-radius: 8px;
+      margin-top: 1rem;
+      background: #d0ffe0;
+      padding: 1rem;
+      border-radius: 10px;
     }
     footer {
       text-align: center;
-      padding: 1em;
-      font-size: 0.9em;
+      font-size: 0.9rem;
+      padding: 2rem 1rem;
       background: var(--card);
-      margin-top: 2em;
     }
   </style>
 </head>
@@ -106,14 +123,13 @@
 
   <header>
     <h1 id="titulo">Calculadora de Marketplaces</h1>
+    <nav>
+      <button onclick="showSection('simples')">Simples</button>
+      <button onclick="showSection('kit')">Kit/Combo</button>
+      <button onclick="showSection('comparador')">Comparador</button>
+      <button onclick="showSection('historico')">Histórico</button>
+    </nav>
   </header>
-
-  <nav>
-    <button onclick="showSection('simples')">Simples</button>
-    <button onclick="showSection('kit')">Kit/Combo</button>
-    <button onclick="showSection('comparador')">Comparador</button>
-    <button onclick="showSection('historico')">Histórico</button>
-  </nav>
 
   <section id="simples" class="section active">
     <h2>Simples</h2>
@@ -130,17 +146,38 @@
 
   <section id="kit" class="section">
     <h2>Kit/Combo</h2>
-    <p>Em breve...</p>
+    
+  <div id="kit-itens"></div>
+  <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
+  <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
+  <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
+  <button class="action" onclick="calcularKit()">Calcular Kit</button>
+  <div id="resultado-kit" class="result"></div>
+  
   </section>
 
   <section id="comparador" class="section">
     <h2>Comparador</h2>
-    <p>Em breve...</p>
+    
+  <div id="kit-itens"></div>
+  <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
+  <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
+  <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
+  <button class="action" onclick="calcularKit()">Calcular Kit</button>
+  <div id="resultado-kit" class="result"></div>
+  
   </section>
 
-  <section id="historico" class="section">
+  <section id="historico" class="section active">
     <h2>Histórico</h2>
-    <p>Em breve...</p>
+    
+  <div id="kit-itens"></div>
+  <button class="action" onclick="addItemKit()">+ Adicionar Item</button>
+  <input type="number" id="frete-kit" placeholder="Frete Total (R$)" />
+  <input type="number" id="margem-kit" placeholder="Margem Desejada (%)" />
+  <button class="action" onclick="calcularKit()">Calcular Kit</button>
+  <div id="resultado-kit" class="result"></div>
+  
   </section>
 
   <section id="admin-panel" class="section" style="display:none;">
@@ -196,6 +233,105 @@
       document.getElementById('resultado').innerHTML =
         `<p>Preço sugerido: R$ ${preco.toFixed(2)}</p><p>Lucro estimado: R$ ${lucro.toFixed(2)}</p>`;
     }
-  </script>
+  
+  let contador = 0;
+  function addItemKit() {
+    contador++;
+    const container = document.getElementById("kit-itens");
+    const div = document.createElement("div");
+    div.innerHTML = `
+      <div style="margin-bottom:1em;padding:1em;border:1px dashed #ccc;border-radius:10px">
+        <input placeholder="Nome do Item" id="item-nome-${contador}" />
+        <input type="number" placeholder="Custo do Item" id="item-custo-${contador}" />
+        <input type="number" placeholder="Quantidade" id="item-qtd-${contador}" />
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  function calcularKit() {
+    let total = 0;
+    for (let i = 1; i <= contador; i++) {
+      const nome = document.getElementById(`item-nome-${i}`);
+      const custo = document.getElementById(`item-custo-${i}`);
+      const qtd = document.getElementById(`item-qtd-${i}`);
+      if (nome && custo && qtd) {
+        total += parseFloat(custo.value || 0) * parseInt(qtd.value || 0);
+      }
+    }
+    const frete = parseFloat(document.getElementById("frete-kit").value || 0);
+    const margem = parseFloat(document.getElementById("margem-kit").value || 0);
+    const totalFinal = (total + frete) / (1 - margem / 100);
+    const lucro = totalFinal - total - frete;
+    document.getElementById("resultado-kit").innerHTML = `
+      <p>Preço do Kit: R$ ${totalFinal.toFixed(2)}</p>
+      <p>Lucro Estimado: R$ ${lucro.toFixed(2)}</p>
+    `;
+  }
+  
+  function compararPlataformas() {
+    const custo = parseFloat(document.getElementById("custo-comparador").value || 0);
+    if (!custo) return alert("Informe o custo do produto.");
+
+    const taxas = {
+      "Mercado Livre": 0.16,
+      "Shopee": 0.12,
+      "Magalu": 0.15
+    };
+
+    let resultado = "";
+    for (const [plataforma, taxa] of Object.entries(taxas)) {
+      const preco = custo / (1 - taxa);
+      const lucro = preco - custo;
+      resultado += `<p><strong>${plataforma}</strong>: Preço R$ ${preco.toFixed(2)} — Lucro R$ ${lucro.toFixed(2)}</p>`;
+    }
+
+    document.getElementById("resultado-comparador").innerHTML = resultado;
+  }
+  
+    function salvarSimulacao(tipo, dados) {
+      let historico = JSON.parse(localStorage.getItem('historico')) || [];
+      const timestamp = new Date().toLocaleString();
+      historico.push({ tipo, dados, timestamp });
+      localStorage.setItem('historico', JSON.stringify(historico));
+    }
+
+    function carregarHistorico() {
+      const lista = JSON.parse(localStorage.getItem('historico')) || [];
+      const container = document.getElementById("historico-lista");
+      if (!lista.length) {
+        container.innerHTML = "<p>Nenhuma simulação salva ainda.</p>";
+        return;
+      }
+      container.innerHTML = lista.map(item =>
+        `<div style='margin-bottom:1em;padding:1em;background:#ddd;border-radius:10px'>
+          <strong>${item.tipo}</strong> — ${item.timestamp}<br>${item.dados}
+        </div>`
+      ).join('');
+    }
+
+    // Modificações nos cálculos para salvar resultado no histórico
+    const originalCalcular = calcular;
+    calcular = function() {
+      originalCalcular();
+      const texto = document.getElementById('resultado').innerHTML;
+      salvarSimulacao('Simples', texto);
+    }
+
+    const originalCalcularKit = calcularKit;
+    calcularKit = function() {
+      originalCalcularKit();
+      const texto = document.getElementById('resultado-kit').innerHTML;
+      salvarSimulacao('Kit/Combo', texto);
+    }
+
+    const originalCompararPlataformas = compararPlataformas;
+    compararPlataformas = function() {
+      originalCompararPlataformas();
+      const texto = document.getElementById('resultado-comparador').innerHTML;
+      salvarSimulacao('Comparador', texto);
+    }
+    </script>
+
 </body>
 </html>
