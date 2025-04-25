@@ -3,33 +3,117 @@
 <html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora WingCell</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #f0f0f0;
-      font-family: sans-serif;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
       padding: 2rem;
       text-align: center;
     }
     h1 {
-      font-size: 2rem;
-      color: #333;
+      font-size: 2.2rem;
+      color: #222;
     }
-    .status {
-      margin-top: 2rem;
+    .card {
       background: #fff;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    label, input, select {
+      display: block;
+      margin: 0.6rem auto;
+      font-size: 1rem;
+    }
+    input, select {
+      padding: 0.5rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 0.8rem 2rem;
+      margin-top: 1rem;
+      font-weight: bold;
+      background-color: #00c9a7;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 1.5rem;
       padding: 1rem;
+      background: #e0fff0;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
   </style>
 </head>
 <body>
-  <h1>🚀 Calculadora WingCell</h1>
-  <div class="status">
-    <p>⚙️ Versão carregada com sucesso!</p>
-    <p>Esta é uma versão de teste segura para o Netlify.</p>
+  <h1>🧮 Calculadora WingCell PRO</h1>
+  <div class="card">
+    <label for="custo">Custo do Produto</label>
+    <input type="number" id="custo" placeholder="Ex: 100" />
+    
+    <label for="frete">Frete</label>
+    <input type="number" id="frete" placeholder="Ex: 15" />
+
+    <label for="plataforma">Plataforma</label>
+    <select id="plataforma">
+      <option value="mercado_livre">Mercado Livre</option>
+      <option value="shopee">Shopee</option>
+      <option value="magalu">Magalu</option>
+    </select>
+
+    <label for="plano">Plano</label>
+    <select id="plano">
+      <option value="classico">Clássico</option>
+      <option value="premium">Premium</option>
+    </select>
+
+    <button onclick="calcular()">Calcular</button>
+
+    <div id="resultado" class="result"></div>
   </div>
+
+  <script>
+    const taxas = {
+      mercado_livre: { classico: 0.16, premium: 0.18 },
+      shopee: { classico: 0.14, premium: 0.16 },
+      magalu: { classico: 0.15, premium: 0.17 }
+    };
+
+    function calcular() {
+      const custo = parseFloat(document.getElementById('custo').value);
+      const frete = parseFloat(document.getElementById('frete').value);
+      const plataforma = document.getElementById('plataforma').value;
+      const plano = document.getElementById('plano').value;
+
+      if (isNaN(custo) || isNaN(frete)) {
+        alert("Preencha todos os campos corretamente.");
+        return;
+      }
+
+      let resultado = "<h3>Resultados</h3>";
+      for (let margem = 10; margem <= 100; margem += 10) {
+        const taxa = taxas[plataforma][plano];
+        const preco = (custo + frete) * (1 + taxa) * (1 + margem / 100);
+        const lucro = preco - custo - frete - (preco * taxa);
+        if (lucro > 0) {
+          resultado += `<p><strong>${margem}% margem:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
+        }
+      }
+
+      document.getElementById('resultado').innerHTML = resultado;
+    }
+  </script>
 </body>
 </html>
