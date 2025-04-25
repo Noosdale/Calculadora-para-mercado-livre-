@@ -1,32 +1,39 @@
-# 🧮 Calculadora WingCell (Web)
+# 🧮 Calculadora WingCell (Versão Final)
 
-**Versão moderna e responsiva da calculadora para profissionais de e-commerce e assistência técnica.**  
-Desenvolvida para uso em marketplaces como **Mercado Livre**, **Shopee** e **Magalu**.
+**Versão mais avançada e responsiva da Calculadora WingCell para profissionais de e-commerce.**  
+Atualizada com taxas 2024 e simulação automática de margens.
 
 ---
 
 ## ✨ Funcionalidades
 
 - 📦 **Simulador de Produto Simples**  
-  Calcule preço ideal e lucro baseado em comissões de cada plataforma.
+  Calcule preços sugeridos e lucros automáticos baseados em:
+  - Custo do Produto
+  - Frete
+  - Plataforma (Mercado Livre, Shopee, Magalu)
+  - Plano (Clássico / Premium)
 
-- 🧰 **Simulador de Kit/Combo** *(em breve)*  
-  Monte kits com múltiplos produtos e margens desejadas.
+- 🧰 **Simulador de Kit/Combo**  
+  Monte combos de produtos e obtenha preços ideais com lucro.
 
-- ⚖️ **Comparador de Marketplaces** *(em breve)*  
-  Compare retorno financeiro entre plataformas.
+- ⚖️ **Comparador entre Marketplaces**  
+  Compare rapidamente preços e lucros entre diferentes canais.
 
-- 🕒 **Histórico Local de Simulações** *(em breve)*  
-  Salve e revise simulações anteriores com `localStorage`.
+- 🕒 **Histórico Local de Simulações**  
+  Visualize simulações anteriores salvas automaticamente (localStorage).
 
-- 🌙 **Tema Claro/Escuro**  
-  Alternância automática e salva no navegador.
+- 🌙 **Modo Escuro e Claro**  
+  Experiência otimizada para visualização diurna ou noturna.
 
-- 🇧🇷 / 🇺🇸 **Idioma**  
-  Interface bilíngue (Português/Inglês).
+- 🇧🇷 / 🇺🇸 **Interface Bilíngue**  
+  Alternância entre Português e Inglês.
 
-- 🔐 **Área Administrativa**  
-  Acesso restrito para ajustar taxas de comissão (senha padrão: `h4dii1`).
+- 🔍 **Modo Avançado**  
+  Opção de inserir margem personalizada para simulações detalhadas.
+
+- ℹ️ **Tooltips Inteligentes (i)**  
+  Explicações intuitivas ao passar o mouse sobre os menus.
 
 ---
 
@@ -34,9 +41,9 @@ Desenvolvida para uso em marketplaces como **Mercado Livre**, **Shopee** e **Mag
 
 - HTML5
 - CSS3
-- JavaScript (puro)
-- Netlify (deploy)
-- GitHub (código aberto)
+- JavaScript Puro
+- Netlify (Deploy)
+- GitHub (Controle de Código)
 
 ---
 
@@ -46,26 +53,25 @@ Desenvolvida para uso em marketplaces como **Mercado Livre**, **Shopee** e **Mag
 # Clone este repositório
 git clone https://github.com/seu-usuario/calculadora-wingcell.git
 
-# Abra o arquivo index.html no navegador
+# Acesse o arquivo index.html no navegador
 ```
 
 ---
 
 ## 🌐 Deploy no Netlify
 
-1. Vá até [https://netlify.com](https://netlify.com)
-2. Faça login e clique em **New site from Git**
-3. Conecte seu GitHub e selecione este repositório
-4. Clique em **Deploy site**
-5. Pronto! Você terá uma URL como `https://sua-calculadora.netlify.app`
+1. Acesse [Netlify](https://netlify.com).
+2. Clique em **New Site from Git**.
+3. Conecte seu GitHub e selecione este repositório.
+4. Clique em **Deploy Site**.
+5. Pronto! Você terá seu site online gratuito.
 
 ---
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a Licença MIT.  
-Feito com 💚 por WingCell.
+Este projeto está licenciado sob a Licença MIT.
 
 ---
 
-> Versão 1.0 – Calculadora WingCell © 2024
+> Versão 2.0 — Calculadora WingCell © 2024
