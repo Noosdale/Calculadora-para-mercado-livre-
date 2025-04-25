@@ -4,39 +4,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora WingCell PRO - Final</title>
+  <title>Calculadora WingCell - Refinada</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* Estilos unificados (visual limpo, dark/light theme suportado) */
     body {
       font-family: 'Montserrat', sans-serif;
       margin: 0;
-      background-color: #f5f5f5;
+      background: #f5f5f5;
       color: #333;
-    }
-    [data-theme="dark"] {
-      background-color: #121212;
-      color: #eee;
     }
     nav {
       display: flex;
       justify-content: center;
-      background: #00c9a7;
       gap: 1rem;
       padding: 1rem;
+      background: #00c9a7;
+      position: sticky;
+      top: 0;
     }
     nav button {
-      border: none;
       background: none;
+      border: none;
       font-weight: bold;
+      position: relative;
       cursor: pointer;
-      font-size: 1rem;
+    }
+    nav button .tooltip {
+      visibility: hidden;
+      background-color: #333;
+      color: #fff;
+      padding: 0.3rem 0.6rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      position: absolute;
+      bottom: -2.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    nav button:hover .tooltip {
+      visibility: visible;
     }
     .section {
       display: none;
       padding: 2rem;
       max-width: 800px;
-      margin: 0 auto;
+      margin: auto;
     }
     .section.active {
       display: block;
@@ -51,176 +64,71 @@
       border: 1px solid #ccc;
     }
     button.action {
-      background: #00c9a7;
-      color: black;
+      display: block;
+      margin: 1rem auto;
       padding: 0.7rem 1.5rem;
+      background: #00c9a7;
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin: 1rem auto;
-      display: block;
+      font-weight: bold;
     }
-    .result, .historico {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 10px;
+    .result {
       background: #e0fff0;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <button onclick="showSection('simples')">Produto Simples (i)</button>
-  <button onclick="showSection('kit')">Kit/Combo (i)</button>
-  <button onclick="showSection('comparador')">Comparador (i)</button>
-  <button onclick="showSection('historico')">Histórico (i)</button>
-  <button onclick="toggleTheme()">🌗</button>
+  <button onclick="showSection('simples')">Simples<span class="tooltip">Cálculo de produto simples</span></button>
+  <button onclick="showSection('kit')">Kit/Combo<span class="tooltip">Montagem de kits</span></button>
+  <button onclick="showSection('comparador')">Comparador<span class="tooltip">Compare marketplaces</span></button>
+  <button onclick="showSection('historico')">Histórico<span class="tooltip">Ver simulações anteriores</span></button>
 </nav>
 
-<section id="simples" class="section active">
-  <h1>🛒 Produto Simples</h1>
-  <input id="custo-simples" placeholder="Custo Produto">
-  <select id="plataforma-simples">
-    <option value="mercado_livre">Mercado Livre</option>
-    <option value="shopee">Shopee</option>
-    <option value="magalu">Magalu</option>
-  </select>
-  <select id="plano-simples">
-    <option value="classico">Clássico</option>
-    <option value="premium">Premium</option>
-  </select>
-  <button class="action" onclick="calcularSimples()">Calcular</button>
-  <div id="resultado-simples" class="result"></div>
-</section>
-
-<section id="kit" class="section">
-  <h1>📦 Kit/Combo</h1>
-  <div id="kit-itens"></div>
-  <button class="action" onclick="addKitItem()">+ Adicionar Item</button>
-  <select id="plataforma-kit">
-    <option value="mercado_livre">Mercado Livre</option>
-    <option value="shopee">Shopee</option>
-    <option value="magalu">Magalu</option>
-  </select>
-  <select id="plano-kit">
-    <option value="classico">Clássico</option>
-    <option value="premium">Premium</option>
-  </select>
-  <button class="action" onclick="calcularKit()">Calcular Kit</button>
-  <div id="resultado-kit" class="result"></div>
-</section>
-
-<section id="comparador" class="section">
-  <h1>⚖️ Comparador Marketplaces</h1>
-  <input id="custo-comparador" placeholder="Custo Produto">
+<section id="comparador" class="section active">
+  <h2>⚖️ Comparador de Marketplaces</h2>
+  <input type="number" id="custo-comparador" placeholder="Custo do Produto" />
   <button class="action" onclick="comparar()">Comparar</button>
   <div id="resultado-comparador" class="result"></div>
 </section>
 
-<section id="historico" class="section">
-  <h1>🕒 Histórico</h1>
-  <button class="action" onclick="limparHistorico()">Limpar Histórico</button>
-  <div id="historico-lista" class="historico"></div>
-</section>
-
 <script>
-// Lógica unificada
 const taxas = {
-  mercado_livre: { classico: 0.16, premium: 0.18, frete: 17.90 },
-  shopee: { classico: 0.14, premium: 0.16, frete: 14.99 },
-  magalu: { classico: 0.15, premium: 0.17, frete: 16.50 }
+  mercado_livre: { classico: 0.16, frete: 17.90 },
+  shopee: { classico: 0.14, frete: 14.99 },
+  magalu: { classico: 0.15, frete: 16.50 }
 };
 
 function showSection(id) {
-  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function toggleTheme() {
-  const current = document.documentElement.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-}
-
-function calcularSimples() {
-  const custo = parseFloat(document.getElementById('custo-simples').value || 0);
-  const plataforma = document.getElementById('plataforma-simples').value;
-  const plano = document.getElementById('plano-simples').value;
-  const frete = taxas[plataforma].frete;
-  const taxa = taxas[plataforma][plano];
-
-  let texto = `<h3>Resumo</h3>`;
-  texto += `<p>Custo: R$ ${custo.toFixed(2)}</p><p>Frete: R$ ${frete.toFixed(2)}</p><p>Taxa: ${(taxa*100).toFixed(2)}%</p>`;
-
-  for (let margem = 10; margem <= 100; margem += 10) {
-    const preco = (custo + frete) / (1 - taxa) * (1 + margem/100);
-    const lucro = preco - custo - frete - preco * taxa;
-    if (lucro > 0) {
-      texto += `<p><strong>${margem}%:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
-    }
-  }
-
-  document.getElementById('resultado-simples').innerHTML = texto;
-}
-
-let kitCounter = 0;
-function addKitItem() {
-  kitCounter++;
-  const div = document.createElement('div');
-  div.innerHTML = `
-    <input id="nome-${kitCounter}" placeholder="Nome">
-    <input id="custo-${kitCounter}" type="number" placeholder="Custo">
-    <input id="quantidade-${kitCounter}" type="number" placeholder="Qtd">
-  `;
-  document.getElementById('kit-itens').appendChild(div);
-}
-
-function calcularKit() {
-  const plataforma = document.getElementById('plataforma-kit').value;
-  const plano = document.getElementById('plano-kit').value;
-  const taxa = taxas[plataforma][plano];
-  const frete = taxas[plataforma].frete;
-
-  let total = 0;
-  for (let i = 1; i <= kitCounter; i++) {
-    total += (parseFloat(document.getElementById(`custo-${i}`)?.value || 0)) * (parseInt(document.getElementById(`quantidade-${i}`)?.value || 0));
-  }
-
-  let texto = `<h3>Resumo Kit</h3>`;
-  texto += `<p>Custo Total: R$ ${total.toFixed(2)}</p><p>Frete: R$ ${frete.toFixed(2)}</p>`;
-
-  for (let margem = 10; margem <= 100; margem += 10) {
-    const preco = (total + frete) / (1 - taxa) * (1 + margem/100);
-    const lucro = preco - total - frete - preco * taxa;
-    if (lucro > 0) {
-      texto += `<p><strong>${margem}%:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
-    }
-  }
-
-  document.getElementById('resultado-kit').innerHTML = texto;
-}
-
 function comparar() {
-  const custo = parseFloat(document.getElementById('custo-comparador').value || 0);
-  let texto = "<h3>Comparação</h3>";
-  for (let plataforma in taxas) {
-    const taxa = taxas[plataforma].classico;
-    const frete = taxas[plataforma].frete;
-    const preco = (custo + frete) / (1 - taxa);
-    const lucro = preco - custo - frete - preco * taxa;
-    if (lucro > 0) {
-      texto += `<p><strong>${plataforma.toUpperCase()}:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
+  const custo = parseFloat(document.getElementById("custo-comparador").value || 0);
+  if (!custo) return alert("Informe o custo do produto.");
+  let resultado = "<h3>Comparação por Margem</h3>";
+
+  for (const [plataforma, info] of Object.entries(taxas)) {
+    resultado += `<h4>${plataforma.replace("_", " ").toUpperCase()}</h4>`;
+    for (let margem = 10; margem <= 100; margem += 10) {
+      const taxa = info.classico;
+      const frete = info.frete;
+      const preco = (custo + frete) / (1 - taxa) * (1 + margem / 100);
+      const lucro = preco - custo - frete - preco * taxa;
+      if (lucro > 0) {
+        resultado += `<p><strong>${margem}%:</strong> Preço: R$ ${preco.toFixed(2)} | Lucro: R$ ${lucro.toFixed(2)}</p>`;
+      }
     }
   }
-  document.getElementById('resultado-comparador').innerHTML = texto;
-}
 
-function limparHistorico() {
-  localStorage.clear();
-  document.getElementById('historico-lista').innerHTML = "<p>Histórico limpo.</p>";
+  document.getElementById("resultado-comparador").innerHTML = resultado;
 }
-
 </script>
 
 </body>
