@@ -1,41 +1,71 @@
-# 🧮 Calculadora Wing Cell (Web)
+# 🧮 Calculadora WingCell (Web)
 
-![HTML](https://img.shields.io/badge/HTML-5-E34F26?style=flat-square&logo=html5&logoColor=white)
-![CSS](https://img.shields.io/badge/CSS-3-1572B6?style=flat-square&logo=css3&logoColor=white)
-![JS](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
-![Netlify](https://img.shields.io/badge/Deploy-Netlify-00C7B7?style=flat-square&logo=netlify&logoColor=white)
-
-> Versão web oficial da Calculadora Wing Cell — feita para profissionais de e-commerce e assistência técnica.  
-> Calculadora responsiva e otimizada para **Mercado Livre, Shopee, Magalu** e outros canais.
+**Versão moderna e responsiva da calculadora para profissionais de e-commerce e assistência técnica.**  
+Desenvolvida para uso em marketplaces como **Mercado Livre**, **Shopee** e **Magalu**.
 
 ---
 
 ## ✨ Funcionalidades
 
 - 📦 **Simulador de Produto Simples**  
-  Cálculo automático com plano e comissão, frete e lucro final.
+  Calcule preço ideal e lucro baseado em comissões de cada plataforma.
 
-- 🧰 **Simulador de Kit/Combo**  
-  Montagem de kits com múltiplos itens e margem desejada.
+- 🧰 **Simulador de Kit/Combo** *(em breve)*  
+  Monte kits com múltiplos produtos e margens desejadas.
 
-- ⚖️ **Comparador entre Marketplaces**  
-  Compare Mercado Livre, Shopee e Magalu lado a lado.
+- ⚖️ **Comparador de Marketplaces** *(em breve)*  
+  Compare retorno financeiro entre plataformas.
 
-- 🕒 **Histórico Local de Simulações**  
-  Visualização e filtro de simulações passadas (armazenadas com `localStorage`).
+- 🕒 **Histórico Local de Simulações** *(em breve)*  
+  Salve e revise simulações anteriores com `localStorage`.
 
-- 🖥️ **100% Responsivo**  
-  Interface adaptável para celular, tablet e desktop.
+- 🌙 **Tema Claro/Escuro**  
+  Alternância automática e salva no navegador.
+
+- 🇧🇷 / 🇺🇸 **Idioma**  
+  Interface bilíngue (Português/Inglês).
+
+- 🔐 **Área Administrativa**  
+  Acesso restrito para ajustar taxas de comissão (senha padrão: `h4dii1`).
+
+---
+
+## 💻 Tecnologias
+
+- HTML5
+- CSS3
+- JavaScript (puro)
+- Netlify (deploy)
+- GitHub (código aberto)
 
 ---
 
 ## 🚀 Como usar
 
-🚀 Deploy no Netlify
-1. Acesse [Netlify](https://netlify.com).
-2. Clique em 'New Site from Git'.
-3. Conecte seu GitHub e selecione o repositório.
-4. Clique em 'Deploy Site' — pronto!
+```bash
+# Clone este repositório
+git clone https://github.com/seu-usuario/calculadora-wingcell.git
 
+# Abra o arquivo index.html no navegador
+```
 
+---
 
+## 🌐 Deploy no Netlify
+
+1. Vá até [https://netlify.com](https://netlify.com)
+2. Faça login e clique em **New site from Git**
+3. Conecte seu GitHub e selecione este repositório
+4. Clique em **Deploy site**
+5. Pronto! Você terá uma URL como `https://sua-calculadora.netlify.app`
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT.  
+Feito com 💚 por WingCell.
+
+---
+
+> Versão 1.0 – Calculadora WingCell © 2024
