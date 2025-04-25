@@ -1,1 +1,1 @@
-console.log('Calculadora Wing Cell PRO carregada');
+console.log('Calculadora PRO carregada');
