@@ -2,89 +2,193 @@
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Marketplaces</title>
   <style>
     :root {
-      --bg-color: #f0f2f5;
-      --text-color: #000;
-      --card-bg: #fff;
-      --btn-bg: #4CAF50;
-      --btn-text: #fff;
+      --bg: #f9f9f9;
+      --text: #111;
+      --card: #fff;
+      --accent: #4CAF50;
     }
     [data-theme="dark"] {
-      --bg-color: #121212;
-      --text-color: #f0f0f0;
-      --card-bg: #1e1e1e;
-      --btn-bg: #03dac6;
-      --btn-text: #000;
+      --bg: #121212;
+      --text: #eee;
+      --card: #1e1e1e;
+      --accent: #03dac6;
     }
+
     body {
-      font-family: Arial, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
-    .switchers {
+
+    header {
+      padding: 1em;
+      background: var(--card);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5em;
+      padding: 0.5em;
+      background: var(--card);
+    }
+
+    nav button, .top-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      font-weight: bold;
+      background: var(--accent);
+      color: white;
+      transition: background 0.3s;
+    }
+
+    nav button:hover, .top-btn:hover {
+      background: #3da942;
+    }
+
+    .top-bar {
       display: flex;
       justify-content: flex-end;
       gap: 0.5em;
       padding: 1em;
     }
-    .icon-btn {
-      background: var(--card-bg);
-      border: 1px solid #ccc;
-      border-radius: 999px;
-      padding: 0.5em 0.7em;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: background 0.3s;
+
+    .section {
+      display: none;
+      padding: 1.5em;
+      max-width: 800px;
+      margin: auto;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    .icon-btn:hover {
-      background: #ddd;
+
+    .section.active {
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      margin: 0.5em 0;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button.action {
+      margin-top: 1em;
+      background: var(--accent);
+      color: white;
+    }
+
+    .result {
+      margin-top: 1em;
+      background: #e0ffe0;
+      padding: 1em;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <div class="switchers">
-    <button class="icon-btn" onclick="toggleTheme()">🌙/☀️</button>
-    <button class="icon-btn" onclick="toggleLang()">🇧🇷/🇺🇸</button>
-    <button class="icon-btn" onclick="abrirAdmin()">🔒 Admin</button>
+  <div class="top-bar">
+    <button class="top-btn" onclick="toggleTheme()">🌙/☀️</button>
+    <button class="top-btn" onclick="toggleLang()">BR/US</button>
+    <button class="top-btn" onclick="abrirAdmin()">Admin</button>
   </div>
 
-  <h1 id="titulo">Calculadora de Marketplaces</h1>
+  <header>
+    <h1 id="titulo">Calculadora de Marketplaces</h1>
+  </header>
+
+  <nav>
+    <button onclick="showSection('simples')">Simples</button>
+    <button onclick="showSection('kit')">Kit/Combo</button>
+    <button onclick="showSection('comparador')">Comparador</button>
+    <button onclick="showSection('historico')">Histórico</button>
+  </nav>
+
+  <section id="simples" class="section active">
+    <h2>Simples</h2>
+    <input placeholder="Nome da Simulação" />
+    <input type="number" id="custo-simples" placeholder="Custo do Produto" />
+    <select id="plataforma">
+      <option value="mercado_livre">Mercado Livre</option>
+      <option value="shopee">Shopee</option>
+      <option value="magalu">Magalu</option>
+    </select>
+    <button class="action" onclick="calcular()">Calcular</button>
+    <div id="resultado" class="result"></div>
+  </section>
+
+  <section id="kit" class="section">
+    <h2>Kit/Combo</h2>
+    <p>Em breve...</p>
+  </section>
+
+  <section id="comparador" class="section">
+    <h2>Comparador</h2>
+    <p>Em breve...</p>
+  </section>
+
+  <section id="historico" class="section">
+    <h2>Histórico</h2>
+    <p>Em breve...</p>
+  </section>
+
+  <section id="admin-panel" class="section" style="display:none;">
+    <h2>Área Admin</h2>
+    <textarea style="width:100%;" rows="5" id="admin-config">{ "mercado_livre": 0.16, "shopee": 0.12, "magalu": 0.15 }</textarea>
+  </section>
 
   <script>
-    // Tema
     function toggleTheme() {
-      const html = document.documentElement;
-      const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
+      const theme = document.documentElement.getAttribute('data-theme');
+      const next = theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     }
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
-    // Idioma
-    const translations = {
-      "pt-BR": { "titulo": "Calculadora de Marketplaces" },
-      "en-US": { "titulo": "Marketplace Calculator" }
-    };
-    let currentLang = "pt-BR";
     function toggleLang() {
-      currentLang = currentLang === "pt-BR" ? "en-US" : "pt-BR";
-      document.getElementById("titulo").textContent = translations[currentLang]["titulo"];
+      const titulo = document.getElementById('titulo');
+      titulo.textContent = titulo.textContent.includes('Marketplace') ? 'Calculadora de Marketplaces' : 'Marketplace Calculator';
     }
 
-    // Admin
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
     function abrirAdmin() {
-      const senha = prompt("Digite a senha:");
-      if (senha === "h4dii1") {
-        alert("Acesso liberado à área administrativa.");
+      const senha = prompt('Digite a senha:');
+      if (senha === 'h4dii1') {
+        document.getElementById('admin-panel').style.display = 'block';
+        showSection('admin-panel');
       } else {
-        alert("Senha incorreta.");
+        alert('Acesso negado');
       }
+    }
+
+    function calcular() {
+      const custo = parseFloat(document.getElementById('custo-simples').value);
+      const plataforma = document.getElementById('plataforma').value;
+      const taxas = { mercado_livre: 0.16, shopee: 0.12, magalu: 0.15 };
+      if (!custo) return alert('Informe um custo válido.');
+      const preco = custo / (1 - taxas[plataforma]);
+      const lucro = preco - custo;
+      document.getElementById('resultado').innerHTML =
+        `<p>Preço sugerido: R$ ${preco.toFixed(2)}</p><p>Lucro estimado: R$ ${lucro.toFixed(2)}</p>`;
     }
   </script>
 </body>
