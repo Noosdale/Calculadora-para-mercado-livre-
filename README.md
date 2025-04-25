@@ -29,6 +29,13 @@
 
 ---
 
+🚀 Deploy no Netlify
+1. Acesse [Netlify](https://netlify.com).
+2. Clique em 'New Site from Git'.
+3. Conecte seu GitHub e selecione o repositório.
+4. Clique em 'Deploy Site' — pronto!
+
+
 ## 🚀 Como usar
 
 1. Clone este repositório:
