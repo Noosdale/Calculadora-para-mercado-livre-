@@ -1,8 +1,4 @@
-# Gerar README.md completo para o repositório da Calculadora Wing Cell
 
-readme_path = "/mnt/data/README.md"
-
-readme_content = """
 # 🧮 Calculadora Wing Cell (Web)
 
 ![HTML](https://img.shields.io/badge/HTML-5-E34F26?style=flat-square&logo=html5&logoColor=white)
